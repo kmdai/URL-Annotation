@@ -1,0 +1,37 @@
+apply plugin: 'maven'
+
+group = POM_GROUP
+version = POM_VERSION
+
+
+// 指定编码
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+artifacts {
+    archives sourcesJar
+}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'http://10.5.52.101:8081/nexus/content/repositories/codyy_mobile/') {
+                authentication(userName: "CodyyMobileAdmin", password: "CodyyMobileAdmin")
+            }
+            snapshotRepository(url: 'http://10.5.52.101:8081/nexus/content/repositories/codyy_mobile_SNAPSHOT') {
+                authentication(userName: "CodyyMobileAdmin", password: "CodyyMobileAdmin")
+            }
+            pom.project {
+                name POM_NAME
+                groupId POM_GROUP
+                version POM_VERSION
+                artifactId POM_ARTIFACT_ID
+                packaging POM_PACKAGING
+                description POM_DESCIRPTION
+            }
+        }
+    }
+}
